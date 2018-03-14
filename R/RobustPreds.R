@@ -155,6 +155,7 @@ LiPred <- function(OOBWeights, PredWeights, TRAINY, method="Huber", delta=0.005,
 #'
 #' Method to get predictions from median-type aggregation methods used in paper by Roy & Larocque (2012)
 
+#' @importFrom magrittr "%>%"
 #' @param TrainNodes ntrain by ntree matrix containing terminal node numbers of each training case in each tree
 #' @param TestNodes ntest by ntree matrix containing terminal node numbers of each training case in each tree
 #' @param Inbag ntrain by ntree matrix telling number of times training case came up in bootstrap sample used to grow each tree

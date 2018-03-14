@@ -11,6 +11,7 @@ Description: This package implements the LOWESS-RF method described by Sage, Gen
 Imports: 
     abind,
     dplyr,
+    magrittr,
     MASS,
     randomForestSRC,
     reshape2,
