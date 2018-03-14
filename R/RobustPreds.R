@@ -39,7 +39,7 @@ Huber=function(t){
 #' 3- number of iterations
 #' @export
 
-Compute_deltas=function(OOBWeights, TRAINY, alpha=6, method="Tukey", tol=10^-6, maxiter=100){
+Compute_deltas=function(OOBWeights, TRAINY, alpha=6, method="Tukey", tol=10^-6, maxiter=1000){
   if (!method%in%c("Tukey", "Huber")) {stop('type must be either "Tukey" or "Huber".')}
   #Before going into the loop, we're just setting up the matrices and getting the original OOB
   #prediction and residuals
@@ -124,7 +124,7 @@ LOWESSPred <- function(OOBWeights, PredWeights, TRAINY, alpha=6, method="Tukey",
 #' 3- number of iterations
 #' @export
 
-LiPred <- function(OOBWeights, PredWeights, TRAINY, method="Huber", delta=0.005,   tol=10^-6, maxiter=100){
+LiPred <- function(OOBWeights, PredWeights, TRAINY, method="Huber", delta=0.005,   tol=10^-6, maxiter=1000){
   if (!method%in%c("Tukey", "Huber")) {stop('type must be either "Tukey" or "Huber".')}
   Weights <- PredWeights
   Pred <- PredWeights%*%scale(TRAINY) #standardize training responses

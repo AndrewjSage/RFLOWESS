@@ -5,7 +5,7 @@
 \title{Li, Martin Predictions}
 \usage{
 LiPred(OOBWeights, PredWeights, TRAINY, method = "Huber", delta = 0.005,
-  tol = 10^-6, maxiter = 100)
+  tol = 10^-6, maxiter = 1000)
 }
 \arguments{
 \item{OOBWeights}{matrix of OOB training case weights}

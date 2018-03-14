@@ -13,6 +13,7 @@ Imports:
     dplyr,
     magrittr,
     MASS,
+    quantregForest, 
     randomForestSRC,
     reshape2,
     splitstackshape

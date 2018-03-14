@@ -5,7 +5,7 @@
 \title{Function to compute RFLOWESS weight multipliers for training cases}
 \usage{
 Compute_deltas(OOBWeights, TRAINY, alpha = 6, method = "Tukey",
-  tol = 10^-6, maxiter = 100)
+  tol = 10^-6, maxiter = 1000)
 }
 \arguments{
 \item{OOBWeights}{matrix of OOB training case weights}
