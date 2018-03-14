@@ -169,7 +169,7 @@ AssignFolds <- function(ntrain, cvfolds){
     CVERR <- lapply(X=1:length(parvec), FUN = Calculate_CV_Error, OOBWeights1=CVWeightInfo[[3]],
                     PredWeights1=CVWeightInfo[[4]],TRAINY=CVWeightInfo[[2]], samp=CVWeightInfo[[1]],
                     parvec=parvec, tol=tol,  BisqwtRF=CVWeightInfo[[5]], BisqwtRFL=CVWeightInfo[[6]], OutlierInd=OutlierInd)
-    CVERR <- abind(CVERR, along=3) #convert to an array with dims 6 x 3 x length(parvec)
+    CVERR <- abind::abind(CVERR, along=3) #convert to an array with dims 6 x 3 x length(parvec)
     return(CVERR)
   }
 

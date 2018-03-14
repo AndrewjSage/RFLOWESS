@@ -180,8 +180,8 @@ Node_Tree_Agg=function(TrainNodes, TestNodes, Inbag, TRAINY){
   M <- M[M$Inbag>0,]
   M <- splitstackshape::expandRows(M, "Inbag")
   NodePreds <- data.frame(M %>%
-                         group_by(Tree, Node) %>%
-                         summarise (Meany = mean(Yval),Medy = median(Yval) ) )
+                         dplyr::group_by(Tree, Node) %>%
+                           dplyr::summarise (Meany = mean(Yval),Medy = median(Yval) ) )
   NodePreds$NodeKey <- NodePreds$Node+NodePreds$Tree/ntree
   TestM <- reshape2::melt(TestNodes)
   names(TestM) <- c("TeCase", "Tree", "Node")
