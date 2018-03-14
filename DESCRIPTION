@@ -1,0 +1,21 @@
+Package: RFLOWESS
+Type: Package
+Title: A robust approach to random forest regression
+Version: 1.0.0
+Author: Andrew Sage
+Maintainer: Andrew Sage <ajsage@iastete.edu>
+Description: This package implements the LOWESS-RF method described by Sage, Genschel, and Nettleton. 
+    Random forest prediction weights are iteratively adjusted so that outlying cases are downweighted, 
+    resulting in a more robust prediction. Outlying cases are identified using a residual analysis. This
+    approach is motivated by Cleveland's (1979) locally weighted regression and scatterplot smoothing technique. 
+Imports: 
+    abind,
+    dplyr,
+    MASS,
+    randomForestSRC,
+    reshape2,
+    splitstackshape
+License: What license is it under?
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.0.1
