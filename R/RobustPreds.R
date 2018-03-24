@@ -128,7 +128,7 @@ LiPred <- function(OOBWeights, PredWeights, TRAINY, method="Huber", delta=0.005,
   if (!method%in%c("Tukey", "Huber")) {stop('type must be either "Tukey" or "Huber".')}
   Weights <- PredWeights
   Pred <- PredWeights%*%scale(TRAINY) #standardize training responses
-  Pred <- PredWeights%*%scale(TRAINY) #standardize training responses
+  #Pred <- 0*Pred  If we want to start with y-bar for initial values. I tested that it does converge to the same value.
   Change <- 1
   niter <- 1
   while (Change > tol & niter < maxiter){
@@ -144,7 +144,7 @@ LiPred <- function(OOBWeights, PredWeights, TRAINY, method="Huber", delta=0.005,
     Pred0 <- Pred
     Pred <- as.matrix(AdjWts)%*%scale(TRAINY)
     Pred[is.na(Pred)] <- Pred0[is.na(Pred)] #In case of Tukey, if all weights are 0, keep pred same
-    Change <- mean((scale(Pred)-scale(Pred0))^2)
+    Change <- mean((Pred-Pred0)^2)
     niter <- niter+1
   }
   Pred <- Pred*sd(TRAINY) + mean(TRAINY) #Get back to original scale

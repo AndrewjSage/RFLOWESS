@@ -8,7 +8,7 @@
 #' @param ndsize nodesize
 #' @param ntreestune  number of trees to use for tuning alpha
 #' @param parvec vector of candidate values for tuning parameter alpha
-#' @param cvfolds number of repetitions to perform in cross validation
+#' @param cvreps number of repetitions to perform in cross validation
 #' @param cvfolds number of folds to perform in cross validation
 #' @param  tol maximal change in interation for LOWESSRF weights in cross validation
 #' @return returns a list of 4 items
@@ -75,8 +75,9 @@ Make_All_Preds <-function(DATA, ntrees, ndsize, ntreestune, parvec, cvreps, cvfo
   Preds[,15] <- Lpred[[1]]
   niter[7] <- Lpred[[3]]
   Preds[,16] <- TEST$Y
-  return(list(DATA, Preds, niter, Res))
-}
+  #return(list(DATA, Preds, niter, Res))
+  return(list(Preds, niter, Res))
+  }
 
 
 #' Run Simulation
@@ -96,7 +97,7 @@ Make_All_Preds <-function(DATA, ntrees, ndsize, ntreestune, parvec, cvreps, cvfo
 #' @param ndsize nodesize
 #' @param ntreestune  number of trees to use for tuning alpha
 #' @param parvec vector of candidate values for tuning parameter alpha
-#' @param cvfolds number of repetitions to perform in cross validation
+#' @param cvreps number of repetitions to perform in cross validation
 #' @param cvfolds number of folds to perform in cross validation
 #' @param  tol maximal change in interation for LOWESSRF weights in cross validation
 #' @return returns a list of 4 items
@@ -138,7 +139,7 @@ RunSimulation <- function(Sim = "RL", ntrain, ntest, p, m, contamination = "Var"
 #' @param ndsize nodesize
 #' @param ntreestune  number of trees to use for tuning alpha
 #' @param parvec vector of candidate values for tuning parameter alpha
-#' @param cvfolds number of repetitions to perform in cross validation
+#' @param cvreps number of repetitions to perform in cross validation
 #' @param cvfolds number of folds to perform in cross validation
 #' @param  tol maximal change in interation for LOWESSRF weights in cross validation
 #' @return returns a list of 4 items
@@ -153,3 +154,35 @@ ApplyAcross_m_and_p <- function(Sim, ntrain, ntest, pvec, mvec, contamination="V
   return(Res)
 }
 
+#' Sim across m and p
+#'
+#' Function to repeat simulation over vector of values for p
+#'
+#' @param Sim Which simulation? Either "RL" for Roy Larocque (2012), or "LM" for Li, Martin (2017)
+#' @param ntrain number of training cases
+#' @param ntest, number of test cases
+#' @param pvec proportion of outliers
+#' @param m value of m to use if Sim == "RL"
+#' @param contamination Use either variance ("Var") or mean ("Mean") contamination. Only relevant for Sim =="RL".
+#' @param Vartype use identity ("Id") or Toeplitz ("Toeplitz") correlation matrix. Only relevant for Sim =="LM"
+#' @param DGP If Sim == "RL", which data generating process should be used? either 1 for tree-like, or 2 for non-tree
+#' @param DATA  object from generate_RLdata or generate_LMdata
+#' @param ntrees  number of trees
+#' @param ndsize nodesize
+#' @param ntreestune  number of trees to use for tuning alpha
+#' @param parvec vector of candidate values for tuning parameter alpha
+#' @param cvreps number of repetitions to perform in cross validation
+#' @param cvfolds number of folds to perform in cross validation
+#' @param  tol maximal change in interation for LOWESSRF weights in cross validation
+#' @return returns a list of 4 items
+#'        1. Datasets (TRAIN, TEST, and Outlier Indicator)
+#'        2. Matrix of 16 columns giving different predictions. Last column is true Y.
+#'        3. Number of iterations
+#'        4. Output from TuneMultifoldCV (a list of 8 items itself)
+#' @export
+
+ApplyAcross_p <- function(Sim, ntrain, ntest, pvec, m, contamination="Var", Vartype="Id", DGP, ntrees, ndsize, ntreestune, parvec, cvreps, cvfolds, tol){
+  Res <- sapply(pvec, simplify="array", function(p) RunSimulation(Sim=Sim, ntrain=ntrain, ntest=ntest,m=m, p=p, contamination=contamination,
+                                                                  Vartype=Vartype, DGP=DGP, ntrees=ntrees, ndsize=ndsize, ntreestune=ntreestune, parvec=parvec, cvreps=cvreps, cvfolds=cvfolds, tol=tol))
+  return(Res)
+}

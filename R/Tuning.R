@@ -336,5 +336,6 @@ TuneMultifoldCV=function(TRAIN, TEST, OOBWeights, PredWeights, OutlierInd, ntree
   ERR[3,4] <- LPREDERR[which.min(LOOBERR[4,3,]),2]
   ERR[3,5] <- LPREDERR[which.min(LOOBERR[5,3,]),1]
   ERR[3,6] <- LPREDERR[which.min(LOOBERR[6,3,]),2]
-  return(list(LOOBERR, LPREDERR, ChosenPars, BestPars, Diff, ERR, LWeights, LIter ))
-}
+  #return(list(LOOBERR, LPREDERR, ChosenPars, BestPars, Diff, ERR, LWeights, LIter ))
+  return(list(LOOBERR, LPREDERR, ChosenPars, BestPars, Diff, ERR))
+  }
