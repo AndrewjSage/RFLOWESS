@@ -293,7 +293,7 @@ TuneMultifoldCV=function(TRAIN, TEST, OOBWeights, PredWeights, OutlierInd, ntree
   LPREDERR <- array(dim=c(length(parvec), 2)) #Just one entry for MSE and one for MAPE
   ERR <- array(NA, dim=c(3,6)) #dims whether all, outliers, or nonoutliers are used, and 6 different types of downweighing
   # Get Errors for tuning by doing CV on training data. Returns errors for each parameter
-  Tunerep <- replicate(cvreps, Evaluate_Tuning_Candidates(TRAIN=TRAIN, OutlierInd=OutlierInd, cvfolds=5, parvec=parvec, ndsize=15, ntreestune=100))
+  Tunerep <- replicate(cvreps, Evaluate_Tuning_Candidates(TRAIN=TRAIN, OutlierInd=OutlierInd, cvfolds=cvfolds, parvec=parvec, ndsize=ndsize, ntreestune=ntreestune))
   LOOBERR <- apply(Tunerep, c(1,2,3), mean)
   #Get RFLOWESS predictions for each test case using each tuning parameter estimate
   LPREDINFO <- sapply(X=1:length(parvec), MakeLowessPred, OOBWeights=OOBWeights,

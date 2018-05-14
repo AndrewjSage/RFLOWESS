@@ -33,13 +33,13 @@ RunSimulation(Sim = "RL", ntrain, ntest, p, m, contamination = "Var",
 
 \item{parvec}{vector of candidate values for tuning parameter alpha}
 
-\item{cvfolds}{number of repetitions to perform in cross validation}
+\item{cvreps}{number of repetitions to perform in cross validation}
+
+\item{cvfolds}{number of folds to perform in cross validation}
 
 \item{tol}{maximal change in interation for LOWESSRF weights in cross validation}
 
 \item{DATA}{object from generate_RLdata or generate_LMdata}
-
-\item{cvfolds}{number of folds to perform in cross validation}
 }
 \value{
 returns a list of 4 items

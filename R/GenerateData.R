@@ -76,3 +76,38 @@ generate_LMdata <- function(ntrain, ntest, p, Vartype="Id"){
 }
 
 
+#'Partition Real Data
+#'
+#' Function to partition real datasets into test and training sets and possibly add contamination
+
+#' @param dataset  real dataset to work with
+#' @param nfolds number of folds to partition into to assess performance
+#' @param p percentage of training cases for which to add contamination (using N(0, 5*sd(Y)))
+#' @return returns a list containing the training dataset, the test dataset, and an indicator of whether training cases came from contaminating distribution.
+#' @export
+#'
+
+Partition_Real_Data <- function(dataset, nfolds, p=0){
+  if (!(nrow(dataset)%%nfolds==0)) {stop('Number of folds must evenly divide number of observations')}
+    stdev=sd(dataset[,ncol(dataset)])
+    ntest <- nrow(dataset)/nfolds
+    ntrain <- nrow(dataset)-ntest
+    TRAIN <- array(NA, dim=c(nfolds, ntrain, ncol(dataset)))
+    TEST <- array(NA, dim=c(nfolds, ntest, ncol(dataset)))
+    OutlierIndicator <- array(NA, dim=c(nfolds, ntrain))
+      orderedcases <- sample(1:nrow(dataset),replace=F)
+      foldsize <- nrow(dataset)/nfolds
+      for(fold in 1:nfolds){
+        CVTRAINind <- orderedcases[-orderedcases[((fold-1)*foldsize+1):(fold*foldsize)]]
+        CVTESTind <- orderedcases[orderedcases[((fold-1)*foldsize+1):(fold*foldsize)]]
+        TRAIN[fold,,] <- as.matrix(dataset[CVTRAINind,,])
+        TEST[fold,,] <-  as.matrix(dataset[CVTESTind,,])
+        ds=rbinom(ntrain,1,p)  #determine which training cases are outliers
+        e=c(rep(0, ntrain))   #initialize error vector
+        e[ds==1]=rnorm(length(e[ds==1]),0,5*stdev) #contaminated errors for variance cont.
+        TRAIN[fold,,ncol(TRAIN[fold,,])] <- TRAIN[fold,,ncol(TRAIN[fold,,])]+e
+        OutlierIndicator[fold,] <- ds
+}
+    return(list(TRAIN, TEST,OutlierIndicator))
+  }
+
