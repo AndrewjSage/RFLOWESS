@@ -4,11 +4,17 @@
 \alias{Assess_Folds}
 \title{Assess_Folds}
 \usage{
-Assess_Folds(PartitionedData, fold, ntrees, ndsize, ntreestune, parvec, cvreps,
-  cvfolds, tol)
+Assess_Folds(dataset, partitions, p, fold, ntrees, ndsize, ntreestune, parvec,
+  cvreps, cvfolds, tol)
 }
 \arguments{
-\item{PartitionedData}{List of partitioned dataframes for training, test sets, and indicator of outlying observations}
+\item{dataset}{List of partitioned dataframes for training, test sets, and indicator of outlying observations}
+
+\item{partitions}{array containing indices of training and test cases}
+
+\item{p}{percentage of training cases for which to add contamination (using N(0, 5*sd(Y)))}
+
+\item{fold}{fold on which to assess performance}
 
 \item{ntrees}{number of trees}
 
@@ -23,8 +29,6 @@ Assess_Folds(PartitionedData, fold, ntrees, ndsize, ntreestune, parvec, cvreps,
 \item{cvfolds}{number of folds to perform in cross validation}
 
 \item{tol}{maximal change in interation for LOWESSRF weights in cross validation}
-
-\item{folds}{fold on which to assess performance}
 }
 \value{
 returns a list of 4 items

@@ -4,14 +4,12 @@
 \alias{Partition_Real_Data}
 \title{Partition Real Data}
 \usage{
-Partition_Real_Data(dataset, nfolds, p)
+Partition_Real_Data(dataset, nfolds)
 }
 \arguments{
 \item{dataset}{real dataset to work with}
 
 \item{nfolds}{number of folds to partition into to assess performance}
-
-\item{p}{percentage of training cases for which to add contamination (using N(0, 5*sd(Y)))}
 }
 \value{
 returns a list containing the training dataset, the test dataset, and an indicator of whether training cases came from contaminating distribution.
