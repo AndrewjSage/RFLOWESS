@@ -24,13 +24,13 @@ Assess_Folds <- function(dataset, partitions, p, fold, ntrees, ndsize, ntreestun
 stdev=sd(dataset[,ncol(dataset)])
 CVTRAINind <- partitions[[1]]
 CVTESTind <- partitions[[2]]
-OutlierIndicator <- partitions[[3]]
 TRAIN <- dataset[CVTRAINind[fold,],]
 ds=rbinom(ntrain,1,p)  #determine which training cases are outliers
 e=c(rep(0, ntrain))   #initialize error vector
 e[ds==1]=rnorm(length(e[ds==1]),0,5*stdev) #contaminated errors for variance cont.
 TRAIN[,ncol(TRAIN)] <-TRAIN[,ncol(TRAIN)]+e
 TEST <- dataset[CVTESTind[fold,],]
+OutlierIndicator <- ds
 DATA <- list(TRAIN, TEST, OutlierIndicator)
 names(DATA[[1]])[ncol(DATA[[1]])] <- "Y"
 names(DATA[[2]])[ncol(DATA[[2]])] <- "Y"

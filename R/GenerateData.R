@@ -87,16 +87,20 @@ generate_LMdata <- function(ntrain, ntest, p, Vartype="Id"){
 #'
 
 Partition_Real_Data <- function(dataset, nfolds){
-  if (!(nrow(dataset)%%nfolds==0)) {stop('Number of folds must evenly divide number of observations')}
+  #if (!(nrow(dataset)%%nfolds==0)) {stop('Number of folds must evenly divide number of observations')}
       orderedcases <- sample(1:nrow(dataset),replace=F)
-      foldsize <- nrow(dataset)/nfolds
+      foldsize <- ceiling(nrow(dataset)/nfolds)
+      extras <- foldsize*nfolds - length(orderedcases)
+      if(extras>0){
+        repeatedcases <- orderedcases[1:extras]
+        orderedcases <- c(orderedcases, repeatedcases)
+      }
       CVTRAINind <- array(NA, dim=c(nfolds, nrow(dataset)-foldsize))
       CVTESTind <- array(NA, dim=c(nfolds, foldsize))
       for(fold in 1:nfolds){
-        CVTRAINind[fold,] <- orderedcases[-orderedcases[((fold-1)*foldsize+1):(fold*foldsize)]]
-        CVTESTind[fold,] <- orderedcases[orderedcases[((fold-1)*foldsize+1):(fold*foldsize)]]
-       OutlierIndicator[fold,] <- ds
+        CVTESTind[fold,] <- orderedcases[((fold-1)*foldsize+1):(fold*foldsize)]
+        CVTRAINind[fold,] <- unique(orderedcases[!orderedcases%in%CVTESTind[fold,]])
 }
-    return(list(CVTRAINind, CVTESTind, OutlierIndicator))
+    return(list(CVTRAINind, CVTESTind))
   }
 
