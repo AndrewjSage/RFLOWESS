@@ -4,7 +4,7 @@
 \alias{Partition_Real_Data}
 \title{Partition Real Data}
 \usage{
-Partition_Real_Data(dataset, nfolds, p = 0)
+Partition_Real_Data(dataset, nfolds, p)
 }
 \arguments{
 \item{dataset}{real dataset to work with}
