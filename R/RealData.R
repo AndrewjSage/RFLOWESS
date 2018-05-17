@@ -25,6 +25,7 @@ stdev=sd(dataset[,ncol(dataset)])
 CVTRAINind <- partitions[[1]]
 CVTESTind <- partitions[[2]]
 TRAIN <- dataset[CVTRAINind[fold,],]
+ntrain <- nrow(TRAIN)
 ds=rbinom(ntrain,1,p)  #determine which training cases are outliers
 e=c(rep(0, ntrain))   #initialize error vector
 e[ds==1]=rnorm(length(e[ds==1]),0,5*stdev) #contaminated errors for variance cont.
