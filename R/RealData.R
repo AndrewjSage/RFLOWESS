@@ -26,10 +26,10 @@ CVTRAINind <- partitions[[1]]
 CVTESTind <- partitions[[2]]
 TRAIN <- dataset[CVTRAINind[fold,],]
 ntrain <- nrow(TRAIN)
-ds=rbinom(ntrain,1,p)  #determine which training cases are outliers
-e=c(rep(0, ntrain))   #initialize error vector
-e[ds==1]=rnorm(length(e[ds==1]),0,5*stdev) #contaminated errors for variance cont.
-TRAIN[,ncol(TRAIN)] <-TRAIN[,ncol(TRAIN)]+e
+ds <- rbinom(ntrain,1,p)  #determine which training cases are outliers
+e <- c(rep(0, ntrain))   #initialize error vector
+e[ds==1] <- rnorm(length(e[ds==1]),0,5*stdev) #contaminated errors for variance cont.
+TRAIN[,ncol(TRAIN)] <- TRAIN[,ncol(TRAIN)]+e
 TEST <- dataset[CVTESTind[fold,],]
 OutlierIndicator <- ds
 DATA <- list(TRAIN, TEST, OutlierIndicator)
@@ -65,7 +65,7 @@ return(Preds)
 
 Assess_Real_Data <- function(dataset, nfolds, p, ntrees, ndsize, ntreestune, parvec, cvreps, cvfolds, tol ){
     cuts <- Partition_Real_Data(dataset, nfolds=nfolds)
-    Preds <- sapply(1:nfolds, simplify="array", Assess_Folds, dataset=dataset, partitions=cuts, p=0 , ntrees=ntrees, ndsize=ndsize,
+    Preds <- sapply(1:nfolds, simplify="array", Assess_Folds, dataset=dataset, partitions=cuts, p=p , ntrees=ntrees, ndsize=ndsize,
            ntreestune=ntreestune, parvec=parvec, cvreps=cvreps, cvfolds=cvfolds, tol=tol  )
   return(Preds)
 }

@@ -277,11 +277,8 @@ MakeLowessPred <- function(OOBWeights, PredWeights, TRAINY, TEST,  tol=tol, ind,
 #'        5. Diff: 6 by 3 matrix containing the difference between the value of alpha chosen by each weighting crietera and function applied
 #'                 to the training data, and the one performing best on the test data
 #'        6. ERR: 3 by 6 matrix containing error on test data (either MSPE in columns 1,3,5 or MAPE in columns 2,4,6) where
-#'                columns denote the parameter chose determined using the 6 criteria explained in the rows for LOOBERR
+#'                columns denote the parameter choice determined using the 6 criteria explained in the rows for LOOBERR
 #'                and rows represent using (1) All training cases, (2) Only Outliers, (3) Only nonoutliers in tuning.
-#'        7. LWeights: list of length(parvec) matrices of dimension ntest by ntrain, containing LOWESSRF weights for each value of alpha
-#'        8. LIter: vector of length of parvec, indicating number of iterations LOWESSRF algorithm needed in order to converge for each
-#'                  value of alpha.
 #' @export
 #'
 
