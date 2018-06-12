@@ -29,8 +29,6 @@ Calculate_CV_Error(OOBWeights1, PredWeights1, TRAINY, samp, parvec, ind,
 
 \item{BisqwtRF}{Weight to be applied to each test or validation case when using cross validation to set tuning parameter, using RF outliers for downweighting}
 
-\item{BisqwtRFL}{Weight to be applied to each test or validation case when using cross validation to set tuning parameter, using RFLOWESS outliers for downweighting}
-
 \item{OutlierInd}{Vector of zeros and ones indicating whether training cases came from contaminating distribution}
 }
 \value{

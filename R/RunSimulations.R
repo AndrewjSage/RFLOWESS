@@ -67,11 +67,11 @@ Make_All_Preds <-function(DATA, ntrees, ndsize, ntreestune, parvec, cvreps, cvfo
   Preds[,13] <- Lpred[[1]]
   niter[5] <- Lpred[[3]]
   #using weighted CV by LOWESS resid with MSE
-  Lpred <- LOWESSPred(OOBWeights, PredWeights, TRAINY, tol=10^-6, alpha=parvec[which.min(CVERR[5,1,])], method="Tukey")
+  #Lpred <- LOWESSPred(OOBWeights, PredWeights, TRAINY, tol=10^-6, alpha=parvec[which.min(CVERR[5,1,])], method="Tukey")
   Preds[,14] <- Lpred[[1]]
   niter[6] <- Lpred[[3]]
   #using weighted CV by LOWESS resid with MAPE
-  Lpred <- LOWESSPred(OOBWeights, PredWeights, TRAINY, tol=10^-6, alpha=parvec[which.min(CVERR[6,1,])], method="Tukey")
+  #Lpred <- LOWESSPred(OOBWeights, PredWeights, TRAINY, tol=10^-6, alpha=parvec[which.min(CVERR[6,1,])], method="Tukey")
   Preds[,15] <- Lpred[[1]]
   niter[7] <- Lpred[[3]]
   Preds[,16] <- TEST$Y

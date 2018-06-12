@@ -1,7 +1,7 @@
 Package: RFLOWESS
 Type: Package
 Title: A robust approach to random forest regression
-Version: 1.0.0
+Version: 1.0.1
 Author: Andrew Sage
 Maintainer: Andrew Sage <ajsage@iastete.edu>
 Description: This package implements the LOWESS-RF method described by Sage, Genschel, and Nettleton. 

@@ -65,10 +65,11 @@ AssignFolds <- function(ntrain, cvfolds){
       #Determine how to downweight for purpose of CV
       RFTRAIN2Residsc <- (TRAINY[samp]-TRAIN2RFPred)/(6*median(abs((TRAINY[samp]-TRAIN2RFPred))))  #This is the only place where we use the Y's for TRAIN2. To downweight likely outliers
       BisqwtRF <- c(apply(data.frame(RFTRAIN2Residsc), 1, Tukey))
-      RFLTRAIN2Residsc <- (TRAINY[samp]-TRAIN2RFLPred)/(6*median(abs((TRAINY[samp]-TRAIN2RFLPred))))  #This is the only place where we use the Y's for TRAIN2. To downweight likely outliers
-      BisqwtRFL <- apply(data.frame(RFLTRAIN2Residsc), 1, Tukey)
-      return(list(samp, TRAINY, OOBWeights1, PredWeights1, BisqwtRF, BisqwtRFL))
-      }
+      #RFLTRAIN2Residsc <- (TRAINY[samp]-TRAIN2RFLPred)/(6*median(abs((TRAINY[samp]-TRAIN2RFLPred))))  #This is the only place where we use the Y's for TRAIN2. To downweight likely outliers
+      #BisqwtRFL <- apply(data.frame(RFLTRAIN2Residsc), 1, Tukey)
+      #return(list(samp, TRAINY, OOBWeights1, PredWeights1, BisqwtRF, BisqwtRFL))
+      return(list(samp, TRAINY, OOBWeights1, PredWeights1, BisqwtRF))
+            }
 
 
 #' Parameter tuning function
@@ -86,7 +87,6 @@ AssignFolds <- function(ntrain, cvfolds){
 #' @param  ind index of parameter tuning vector to work on
 #' @param  tol maximal change in interation for LOWESSRF weights in cross validation
 #' @param  BisqwtRF Weight to be applied to each test or validation case when using cross validation to set tuning parameter, using RF outliers for downweighting
-#' @param  BisqwtRFL Weight to be applied to each test or validation case when using cross validation to set tuning parameter, using RFLOWESS outliers for downweighting
 #' @param  OutlierInd Vector of zeros and ones indicating whether training cases came from contaminating distribution
 #' @return Returns a 6 by 3 matrix with errors. Rows indicate type of weighting applied to errors in TRAIN2.
 #'          1-MSE without downweighting outliers in CV error
@@ -98,8 +98,9 @@ AssignFolds <- function(ntrain, cvfolds){
 #'         Columns represent error for all cases (1), only outliers (2), only nonoutliers(3)
 #' @export
 
+ #  Calculate_CV_Error <- function(OOBWeights1, PredWeights1, TRAINY, samp, parvec, ind, tol=10^-4, BisqwtRF, BisqwtRFL, OutlierInd){
     Calculate_CV_Error <- function(OOBWeights1, PredWeights1, TRAINY, samp, parvec, ind, tol=10^-4, BisqwtRF, BisqwtRFL, OutlierInd){
-      CVERR <- array(NA, dim=c(6,3))
+      CVERR <- array(NA, dim=c(4,3))
       #RF-LOWESS predictions for cases in TRAIN2 based on cases in TRAIN1 for different alpha
       #PredWeights1 are weights from TRAIN1 for predictions on TRAIN2
       LCVPred <- c(LOWESSPred(OOBWeights1, PredWeights1, TRAINY[-samp], alpha=parvec[ind], method="Tukey", tol=tol)[[1]])
@@ -108,24 +109,24 @@ AssignFolds <- function(ntrain, cvfolds){
       CVERR[2, 1] <- mean(abs(LCVPred-TRAINY[samp]))  #MAPE without downweighting outliers in CV error
       CVERR[3, 1] <- mean((LCVPred-TRAINY[samp])^2*BisqwtRF)  #MSE downweighting outliers according to BisqwtRF
       CVERR[4, 1] <- mean(abs(LCVPred-TRAINY[samp])*BisqwtRF) #MAPE downweighting outliers according to BisqwtRF
-      CVERR[5, 1] <- mean((LCVPred-TRAINY[samp])^2*BisqwtRFL) #MSE downweighting outliers according to BisqwtRFL
-      CVERR[6, 1] <- mean(abs(LCVPred-TRAINY[samp])*BisqwtRFL) #MAPE downweighting outliers according to BisqwtRFL
+#      CVERR[5, 1] <- mean((LCVPred-TRAINY[samp])^2*BisqwtRFL) #MSE downweighting outliers according to BisqwtRFL
+#      CVERR[6, 1] <- mean(abs(LCVPred-TRAINY[samp])*BisqwtRFL) #MAPE downweighting outliers according to BisqwtRFL
       #error on only outlier cases
       if(sum(OutlierInd[samp])>0){
         CVERR[1, 2] <- mean(((LCVPred-TRAINY[samp])^2)[OutlierInd[samp]==1])
         CVERR[2, 2] <- mean(abs(LCVPred-TRAINY[samp])[OutlierInd[samp]==1])
         CVERR[3, 2] <- mean(((LCVPred-TRAINY[samp])^2*(BisqwtRF))[OutlierInd[samp]==1])
         CVERR[4, 2] <- mean((abs(LCVPred-TRAINY[samp])*(BisqwtRF))[OutlierInd[samp]==1])
-        CVERR[5, 2] <- mean(((LCVPred-TRAINY[samp])^2*(BisqwtRFL))[OutlierInd[samp]==1])
-        CVERR[6, 2] <- mean((abs(LCVPred-TRAINY[samp])*(BisqwtRFL))[OutlierInd[samp]==1])
+#        CVERR[5, 2] <- mean(((LCVPred-TRAINY[samp])^2*(BisqwtRFL))[OutlierInd[samp]==1])
+#        CVERR[6, 2] <- mean((abs(LCVPred-TRAINY[samp])*(BisqwtRFL))[OutlierInd[samp]==1])
         }
       #error on only non-outliers
       CVERR[1, 3] <- mean(((LCVPred-TRAINY[samp])^2)[OutlierInd[samp]==0])
       CVERR[2, 3] <- mean(abs(LCVPred-TRAINY[samp])[OutlierInd[samp]==0])
       CVERR[3, 3] <- mean(((LCVPred-TRAINY[samp])^2*(BisqwtRF))[OutlierInd[samp]==0])
       CVERR[4, 3] <- mean((abs(LCVPred-TRAINY[samp])*(BisqwtRF))[OutlierInd[samp]==0])
-      CVERR[5, 3] <- mean(((LCVPred-TRAINY[samp])^2*(BisqwtRFL))[OutlierInd[samp]==0])
-      CVERR[6, 3] <- mean(abs((LCVPred-TRAINY[samp])*(BisqwtRFL))[OutlierInd[samp]==0])
+#      CVERR[5, 3] <- mean(((LCVPred-TRAINY[samp])^2*(BisqwtRFL))[OutlierInd[samp]==0])
+#      CVERR[6, 3] <- mean(abs((LCVPred-TRAINY[samp])*(BisqwtRFL))[OutlierInd[samp]==0])
   return(CVERR)
 }
 
@@ -168,7 +169,7 @@ AssignFolds <- function(ntrain, cvfolds){
     CVWeightInfo <- Get_CVWeights(TRAIN=TRAIN, TestInd=TestInd, fold=fold, ndsize=ndsize, ntreestune=ntreestune)  #done for a specific fold
     CVERR <- lapply(X=1:length(parvec), FUN = Calculate_CV_Error, OOBWeights1=CVWeightInfo[[3]],
                     PredWeights1=CVWeightInfo[[4]],TRAINY=CVWeightInfo[[2]], samp=CVWeightInfo[[1]],
-                    parvec=parvec, tol=tol,  BisqwtRF=CVWeightInfo[[5]], BisqwtRFL=CVWeightInfo[[6]], OutlierInd=OutlierInd)
+                    parvec=parvec, tol=tol,  BisqwtRF=CVWeightInfo[[5]],  OutlierInd=OutlierInd)
     CVERR <- abind::abind(CVERR, along=3) #convert to an array with dims 6 x 3 x length(parvec)
     return(CVERR)
   }
@@ -284,11 +285,11 @@ MakeLowessPred <- function(OOBWeights, PredWeights, TRAINY, TEST,  tol=tol, ind,
 
 TuneMultifoldCV=function(TRAIN, TEST, OOBWeights, PredWeights, OutlierInd, ntrees,ntreestune, ndsize, parvec, cvreps, cvfolds, tol){
   TRAINY <- TRAIN[,ncol(TRAIN)]
-  ChosenPars <- array(NA, dim=c(6,3)) #3 is for contribution of all, outliers, and non-outliers
+  ChosenPars <- array(NA, dim=c(4,3)) #3 is for contribution of all, outliers, and non-outliers
   BestPars <- array(NA, dim=c(2))
-  Diff <- array(NA, dim=c(2,6,3) )#second dimension is for MSE or MAPE #3 is for contribution of all, outliers, and non-outliers
+  Diff <- array(NA, dim=c(2,4,3) )#second dimension is for MSE or MAPE #3 is for contribution of all, outliers, and non-outliers
   LPREDERR <- array(dim=c(length(parvec), 2)) #Just one entry for MSE and one for MAPE
-  ERR <- array(NA, dim=c(3,6)) #dims whether all, outliers, or nonoutliers are used, and 6 different types of downweighing
+  ERR <- array(NA, dim=c(3,4)) #dims whether all, outliers, or nonoutliers are used, and 6 different types of downweighing
   # Get Errors for tuning by doing CV on training data. Returns errors for each parameter
   Tunerep <- replicate(cvreps, Evaluate_Tuning_Candidates(TRAIN=TRAIN, OutlierInd=OutlierInd, cvfolds=cvfolds, parvec=parvec, ndsize=ndsize, ntreestune=ntreestune))
   LOOBERR <- apply(Tunerep, c(1,2,3), mean)
@@ -315,24 +316,24 @@ TuneMultifoldCV=function(TRAIN, TEST, OOBWeights, PredWeights, OutlierInd, ntree
   ERR[1,2] <- LPREDERR[which.min(LOOBERR[2,1,]),2] #first 2 is for CVtype-unweighted/MAPE, second is for using all training cases, 3rd is for MAPE
   ERR[1,3] <- LPREDERR[which.min(LOOBERR[3,1,]),1] #using RF downweighting
   ERR[1,4] <- LPREDERR[which.min(LOOBERR[4,1,]),2]
-  ERR[1,5] <- LPREDERR[which.min(LOOBERR[5,1,]),1] #using LOWESS downweighting
-  ERR[1,6] <- LPREDERR[which.min(LOOBERR[6,1,]),2]
+  #ERR[1,5] <- LPREDERR[which.min(LOOBERR[5,1,]),1] #using LOWESS downweighting
+  #ERR[1,6] <- LPREDERR[which.min(LOOBERR[6,1,]),2]
   #Prediction error only outliers in TRAIN2 to tune-not sure why we'd want to do this
   if(sum(is.na(LOOBERR[,,2]))==0){
     ERR[2,1] <- LPREDERR[which.min(LOOBERR[1,2,]),1]  #first 1 is for CVtype-unweighted/MSE, second is for using all training cases, 3rd is for MSE
     ERR[2,2] <- LPREDERR[which.min(LOOBERR[2,2,]),2] #first 2 is for CVtype-unweighted/MAPE, second is for using all training cases, 3rd is for MAPE
     ERR[2,3] <- LPREDERR[which.min(LOOBERR[3,2,]),1]
     ERR[2,4] <- LPREDERR[which.min(LOOBERR[4,2,]),2]
-    ERR[2,5] <- LPREDERR[which.min(LOOBERR[5,2,]),1]
-    ERR[2,6] <- LPREDERR[which.min(LOOBERR[6,2,]),2]
+   # ERR[2,5] <- LPREDERR[which.min(LOOBERR[5,2,]),1]
+  #  ERR[2,6] <- LPREDERR[which.min(LOOBERR[6,2,]),2]
   }
   #Prediction error using only nonoutliers  in TRAIN2 to tune
   ERR[3,1] <- LPREDERR[which.min(LOOBERR[1,3,]),1]  #first 1 is for CVtype-unweighted/MSE, second is for using all training cases, 3rd is for MSE
   ERR[3,2] <- LPREDERR[which.min(LOOBERR[2,3,]),2] #first 2 is for CVtype-unweighted/MAPE, second is for using all training cases, 3rd is for MAPE
   ERR[3,3] <- LPREDERR[which.min(LOOBERR[3,3,]),1]
   ERR[3,4] <- LPREDERR[which.min(LOOBERR[4,3,]),2]
-  ERR[3,5] <- LPREDERR[which.min(LOOBERR[5,3,]),1]
-  ERR[3,6] <- LPREDERR[which.min(LOOBERR[6,3,]),2]
+  #ERR[3,5] <- LPREDERR[which.min(LOOBERR[5,3,]),1]
+  #ERR[3,6] <- LPREDERR[which.min(LOOBERR[6,3,]),2]
   #return(list(LOOBERR, LPREDERR, ChosenPars, BestPars, Diff, ERR, LWeights, LIter ))
   return(list(LOOBERR, LPREDERR, ChosenPars, BestPars, Diff, ERR))
   }
